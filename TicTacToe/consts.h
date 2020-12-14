@@ -9,6 +9,11 @@ extern const int WIN_COMPUTER_WON;
 extern const int WIN_TIE;
 extern const int WIN_NO_WIN_YET;
 
+extern const char INPUT_YES_UPPERCASE;
+extern const char INPUT_YES_LOWERCASE;
+extern const char INPUT_NO_UPPERCASE;
+extern const char INPUT_NO_LOWERCASE;
+
 extern const char *OUTPUT_NEW_MOVE;
 extern const char *OUTPUT_MOVED;
 extern const char *OUTPUT_COMPUTER_MOVE_DONE;

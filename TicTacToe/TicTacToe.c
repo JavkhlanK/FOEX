@@ -40,15 +40,12 @@ void main()
 		printf(OUTPUT_DEBUG_COMPUTER_ON_OFF);
 		scanf("%c", &answer);
 
-		switch (answer)
+		if (answer == INPUT_YES_UPPERCASE || answer == INPUT_YES_LOWERCASE)
 		{
-		case 'Y':
-		case 'y':
 			shouldComputerPlay = 1;
-			break;
-
-		case 'N':
-		case 'n':
+		}
+		else if (answer == INPUT_NO_UPPERCASE || answer == INPUT_NO_LOWERCASE)
+		{
 			shouldComputerPlay = 0;
 		}
 	}
