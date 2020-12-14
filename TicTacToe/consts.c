@@ -16,7 +16,7 @@ const char *OUTPUT_MOVED = "Gesetzt!\n";
 const char *OUTPUT_COMPUTER_MOVE_DONE = "Der Computer hat gespielt!\n";
 const char *OUTPUT_COMPUTER_MOVE_SKIPPED = "Der Computer hat diese Runde uebersprungen.\n";
 const char *OUTPUT_CURRENT_BOARD = "Aktuelles Feld:%s%s";
-const char *OUTPUT_CURRENT_BOARD_H_OUTLINES = "-------------";
+const char *OUTPUT_CURRENT_BOARD_H_OUTLINES = "-------------\n";
 const char *OUTPUT_CURRENT_BOARD_MARGIN_CHARS = "\n\n";
 
 const char *OUTPUT_GAME_OVER_VICTORY = "Gewonnen! Du hast den Computer besiegt! GG! :)\n";
