@@ -37,7 +37,7 @@ void main()
 	if (DEBUG_MODE == 1)
 	{
 		char answer;
-		printf("Soll der Computer spielen? (Y/N): ");
+		printf(OUTPUT_DEBUG_COMPUTER_ON_OFF);
 		scanf("%c", &answer);
 
 		switch (answer)
@@ -112,7 +112,7 @@ void processNewMove()
 			return;
 		}
 	}
-	printf("Gesetzt!\n");
+	printf(OUTPUT_MOVED);
 
 	//Has someone won yet?
 	if (checkIfGameIsOver() != WIN_NO_WIN_YET)
@@ -123,7 +123,7 @@ void processNewMove()
 	//Game isn't over yet
 	if (shouldComputerPlay == 0)
 	{
-		printf("Der Computer hat diese Runde uebersprungen.\n");
+		printf(OUTPUT_COMPUTER_MOVE_SKIPPED);
 		processNewMove();
 		return;
 	}
@@ -177,7 +177,7 @@ void computerMove(int unavailableNumbers[], int unavailableNumbersSize, int pick
 
 void printPlayground()
 {
-	printf("Aktuelles Feld:\n\n-------------\n");
+	printf(OUTPUT_CURRENT_BOARD, OUTPUT_CURRENT_BOARD_MARGIN_CHARS, OUTPUT_CURRENT_BOARD_H_OUTLINES);
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 14; j++)
@@ -204,7 +204,8 @@ void printPlayground()
 			}
 		}
 	}
-	printf("-------------\n\n");
+	printf(OUTPUT_CURRENT_BOARD_H_OUTLINES);
+	printf(OUTPUT_CURRENT_BOARD_MARGIN_CHARS);
 
 	if (DEBUG_MODE == 1)
 	{
