@@ -1,5 +1,6 @@
 #include "consts.h"
 
+const double VERSION = 0.5;
 const int DEBUG_MODE = 0;
 
 const int VALUE_USER = 1;

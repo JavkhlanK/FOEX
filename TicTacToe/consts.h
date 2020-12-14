@@ -1,3 +1,4 @@
+extern const double VERSION;
 extern const int DEBUG_MODE;
 
 extern const int VALUE_USER;
