@@ -1,3 +1,4 @@
+/*
 #include "consts.h"
 
 const double VERSION = 0.5;
@@ -33,3 +34,4 @@ const char *OUTPUT_ERROR_FIELD_NOT_IN_RANGE = "Error: Please enter a number rang
 const char *OUTPUT_ERROR_FIELD_ALREADY_FILLED = "Error: This cell is already set.\n";
 
 const char *OUTPUT_DEBUG_COMPUTER_ON_OFF = "Should the computer play? (Y/N): ";
+*/
