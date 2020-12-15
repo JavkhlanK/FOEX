@@ -1,5 +1,4 @@
-/*
-#include "consts.h"
+#include "..\consts.h"
 
 const double VERSION = 0.5;
 const int DEBUG_MODE = 0;
@@ -34,4 +33,3 @@ const char *OUTPUT_ERROR_FIELD_NOT_IN_RANGE = "Fehler: Die Zahl ist nicht innerh
 const char *OUTPUT_ERROR_FIELD_ALREADY_FILLED = "Fehler: Dieses Feld ist schon belegt.\n";
 
 const char *OUTPUT_DEBUG_COMPUTER_ON_OFF = "Soll der Computer spielen? (J/N): ";
-*/

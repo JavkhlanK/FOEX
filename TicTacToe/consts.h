@@ -1,5 +1,5 @@
 static const double VERSION = 0.5;
-static const long BUILD_TIMESTAMP = 1607987834;
+static const long BUILD_TIMESTAMP = 1608024689;
 
 static const int DEBUG_MODE = 0;
 
