@@ -2,10 +2,15 @@
 #include <time.h>
 #include <stdlib.h>
 #include "consts.h"
+#include <string.h>
 
 int field[3][3];
 int shouldComputerPlay = 1;
 
+
+int parseCommandlineArguments();
+
+void fillBoard();
 
 void processNewMove();
 
@@ -18,20 +23,14 @@ int checkIfGameIsOver();
 int currentWinner();
 
 
-void fillPlayground()
+int main(int _argc, char *_argv[])
 {
-	for (int i = 0; i < 3; i++)
+	if (parseCommandlineArguments(_argc, _argv) == 0)
 	{
-		for (int j = 0; j < 3; j++)
-		{
-			field[i][j] = VALUE_FREE;
-		}
+		return 0;
 	}
-}
 
-void main()
-{
-	fillPlayground();
+	fillBoard();
 	srand(time(NULL));
 
 	if (DEBUG_MODE == 1)
@@ -51,6 +50,38 @@ void main()
 	}
 
 	processNewMove();
+	return 0;
+}
+
+int parseCommandlineArguments(int _argc, char *_argv[])
+{
+	if (_argc == 1)
+	{
+		return 1;
+	}
+
+	if (strcmp(_argv[1], "version") == 0)
+	{
+		time_t build_timestamp = (time_t) BUILD_TIMESTAMP;
+		printf("Tic Tac Toe\n - Version %.1lf\n - by Javkhlanbayar Khongorzul (1DHIF)\n - Build date: %s", VERSION, ctime(&build_timestamp));
+	}
+	else if (strcmp(_argv[1], "debug") == 0)
+	{
+		printf("%d\n", DEBUG_MODE);
+	}
+
+	return 0;
+}
+
+void fillBoard()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			field[i][j] = VALUE_FREE;
+		}
+	}
 }
 
 void processNewMove()
