@@ -6,7 +6,7 @@ void main() {
     int min, max;
     srand(time(NULL));
     _sleep(200);
-/*
+    /*
     printf("Min: ");
     scanf("%d", &min);
     printf("Max: ");

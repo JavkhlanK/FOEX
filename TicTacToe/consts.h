@@ -1,7 +1,11 @@
 static const double VERSION = 0.5;
-static const long BUILD_TIMESTAMP = 1608024689;
+static const long BUILD_TIMESTAMP = 1608630874;
+static const char *BUILD_FLAVOR_DEBUG = "Debug";
+static const char *BUILD_FLAVOR_RELEASE = "Release";
 
-static const int DEBUG_MODE = 0;
+static const int NO_COMMANDS_PROCESSED = 1;
+static const int COMMAND_PROCESSED_SUCCESS = 0;
+static const int COMMAND_PROCESSED_ERROR = -1;
 
 static const int VALUE_USER = 1;
 static const int VALUE_FREE = 0;
@@ -17,7 +21,7 @@ static const char INPUT_YES_LOWERCASE = 'j';
 static const char INPUT_NO_UPPERCASE = 'N';
 static const char INPUT_NO_LOWERCASE = 'n';
 
-static const char *OUTPUT_NEW_MOVE = "Bitte Zahl (0-8) eingeben: ";
+static const char *OUTPUT_NEW_MOVE = "Bitte Zahl (1-9) eingeben: ";
 static const char *OUTPUT_MOVED = "Gesetzt!\n";
 static const char *OUTPUT_COMPUTER_MOVE_DONE = "Der Computer hat gespielt!\n";
 static const char *OUTPUT_COMPUTER_MOVE_SKIPPED = "Der Computer hat diese Runde uebersprungen.\n";

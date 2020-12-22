@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include <time.h>
 #include <stdlib.h>
-#include "consts.h"
 #include <string.h>
+#include <time.h>
+#include "consts.h"
+#include "settings.h"
 
 int field[3][3];
-int shouldComputerPlay = 1;
 
 
 int parseCommandlineArguments();
@@ -25,15 +25,20 @@ int currentWinner();
 
 int main(int _argc, char *_argv[])
 {
-	if (parseCommandlineArguments(_argc, _argv) == 0)
+	int wasArgumentSuccessfullyParsed = parseCommandlineArguments(_argc, _argv);
+	if (wasArgumentSuccessfullyParsed == COMMAND_PROCESSED_SUCCESS)
 	{
-		return 0;
+		return EXIT_SUCCESS;
+	}
+	else if (wasArgumentSuccessfullyParsed == COMMAND_PROCESSED_ERROR)
+	{
+		return EXIT_FAILURE;
 	}
 
 	fillBoard();
 	srand(time(NULL));
 
-	if (DEBUG_MODE == 1)
+	if (DEBUG == 1)
 	{
 		char answer;
 		printf(OUTPUT_DEBUG_COMPUTER_ON_OFF);
@@ -41,36 +46,40 @@ int main(int _argc, char *_argv[])
 
 		if (answer == INPUT_YES_UPPERCASE || answer == INPUT_YES_LOWERCASE)
 		{
-			shouldComputerPlay = 1;
+			COMPUTER_ACTIVE = 1;
 		}
 		else if (answer == INPUT_NO_UPPERCASE || answer == INPUT_NO_LOWERCASE)
 		{
-			shouldComputerPlay = 0;
+			COMPUTER_ACTIVE = 0;
 		}
 	}
 
 	processNewMove();
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 int parseCommandlineArguments(int _argc, char *_argv[])
 {
 	if (_argc == 1)
 	{
-		return 1;
+		return NO_COMMANDS_PROCESSED;
 	}
 
-	if (strcmp(_argv[1], "version") == 0)
+	if (strcmp(_argv[1], "--version") == 0)
 	{
 		time_t build_timestamp = (time_t) BUILD_TIMESTAMP;
-		printf("Tic Tac Toe\n - Version %.1lf\n - by Javkhlanbayar Khongorzul (1DHIF)\n - Build date: %s", VERSION, ctime(&build_timestamp));
+		printf("Tic Tac Toe\n - Version %.1lf (%s)\n - by Javkhlanbayar Khongorzul (1DHIF)\n - Build date: %s", VERSION, DEBUG == 0 ? BUILD_FLAVOR_RELEASE : BUILD_FLAVOR_DEBUG, ctime(&build_timestamp));
 	}
-	else if (strcmp(_argv[1], "debug") == 0)
+	else if (strcmp(_argv[1], "--help") == 0)
 	{
-		printf("%d\n", DEBUG_MODE);
+		printf("There are definitely no secrets in here ;)\n");
+	}
+	else
+	{
+		return NO_COMMANDS_PROCESSED;
 	}
 
-	return 0;
+	return COMMAND_PROCESSED_SUCCESS;
 }
 
 void fillBoard()
@@ -93,7 +102,7 @@ void processNewMove()
 	printf(OUTPUT_NEW_MOVE);
 	scanf("%d", &fieldNumber);
 
-	if (fieldNumber < 0 || fieldNumber > 8)
+	if (fieldNumber < 1 || fieldNumber > 9)
 	{
 		printf(OUTPUT_ERROR_FIELD_NOT_IN_RANGE);
 		processNewMove();
@@ -101,11 +110,11 @@ void processNewMove()
 	}
 
 	//Check if the fields are already filled
-	if (fieldNumber >= 6)
+	if (fieldNumber > 6)
 	{
-		if (field[2][fieldNumber - 6] == VALUE_FREE)
+		if (field[2][fieldNumber - 7] == VALUE_FREE)
 		{
-			field[2][fieldNumber - 6] = VALUE_USER;
+			field[2][fieldNumber - 7] = VALUE_USER;
 		}
 		else
 		{
@@ -114,11 +123,11 @@ void processNewMove()
 			return;
 		}
 	}
-	else if (fieldNumber >= 3 && fieldNumber < 6)
+	else if (fieldNumber > 3 && fieldNumber < 7)
 	{
-		if (field[1][fieldNumber - 3] == VALUE_FREE)
+		if (field[1][fieldNumber - 4] == VALUE_FREE)
 		{
-			field[1][fieldNumber - 3] = VALUE_USER;
+			field[1][fieldNumber - 4] = VALUE_USER;
 		}
 		else
 		{
@@ -129,9 +138,9 @@ void processNewMove()
 	}
 	else
 	{
-		if (field[0][fieldNumber] == VALUE_FREE)
+		if (field[0][fieldNumber - 1] == VALUE_FREE)
 		{
-			field[0][fieldNumber] = VALUE_USER;
+			field[0][fieldNumber - 1] = VALUE_USER;
 		}
 		else
 		{
@@ -149,7 +158,7 @@ void processNewMove()
 	}
 
 	//Game isn't over yet
-	if (shouldComputerPlay == 0)
+	if (COMPUTER_ACTIVE == 0)
 	{
 		printf(OUTPUT_COMPUTER_MOVE_SKIPPED);
 		processNewMove();
@@ -235,7 +244,7 @@ void printPlayground()
 	printf(OUTPUT_CURRENT_BOARD_H_OUTLINES);
 	printf(OUTPUT_CURRENT_BOARD_MARGIN_CHARS);
 
-	if (DEBUG_MODE == 1)
+	if (DEBUG == 1)
 	{
 		printf("DUMPING field:\n[");
 		for (int i = 0; i < 9; i++)
