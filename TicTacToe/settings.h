@@ -1,2 +1,5 @@
-static int COMPUTER_ACTIVE = 1;
-static int DEBUG = 1;
+#include <stdbool.h>
+#include "consts.h"
+
+static bool COMPUTER_ACTIVE = true;
+static bool DUMP_FIELD = DEBUG;

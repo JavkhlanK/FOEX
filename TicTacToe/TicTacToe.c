@@ -1,8 +1,8 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "consts.h"
 #include "settings.h"
 
 int field[3][3];
@@ -18,19 +18,21 @@ void computerMove(int unavailableNumbers[], int unavailableNumbersSize, int pick
 
 void printPlayground();
 
-int checkIfGameIsOver();
+bool isGameOverAndPrintMessages();
 
 int currentWinner();
+
+bool isBoardFull();
 
 
 int main(int _argc, char *_argv[])
 {
-	int wasArgumentSuccessfullyParsed = parseCommandlineArguments(_argc, _argv);
-	if (wasArgumentSuccessfullyParsed == COMMAND_PROCESSED_SUCCESS)
+	int parsingResult = parseCommandlineArguments(_argc, _argv);
+	if (parsingResult == COMMAND_PROCESSED_SUCCESS)
 	{
 		return EXIT_SUCCESS;
 	}
-	else if (wasArgumentSuccessfullyParsed == COMMAND_PROCESSED_ERROR)
+	else if (parsingResult == COMMAND_PROCESSED_ERROR)
 	{
 		return EXIT_FAILURE;
 	}
@@ -38,19 +40,53 @@ int main(int _argc, char *_argv[])
 	fillBoard();
 	srand(time(NULL));
 
-	if (DEBUG == 1)
+	if (DEBUG)
 	{
-		char answer;
-		printf(OUTPUT_DEBUG_COMPUTER_ON_OFF);
-		scanf("%c", &answer);
+		char *answer;
+		printf("%s", OUTPUT_DEBUG_COMPUTER_ON_OFF);
+		scanf("%s", answer);
 
-		if (answer == INPUT_YES_UPPERCASE || answer == INPUT_YES_LOWERCASE)
+		if (!_stricmp(answer, INPUT_YES))
 		{
-			COMPUTER_ACTIVE = 1;
+			COMPUTER_ACTIVE = true;
 		}
-		else if (answer == INPUT_NO_UPPERCASE || answer == INPUT_NO_LOWERCASE)
+		else if (!_stricmp(answer, INPUT_NO))
 		{
-			COMPUTER_ACTIVE = 0;
+			COMPUTER_ACTIVE = false;
+		}
+		else
+		{
+			while (!_stricmp(answer, INPUT_YES) && !_stricmp(answer, INPUT_NO))
+			{
+				printf("%s", OUTPUT_ERROR_GENERIC_INVALID_INPUT);
+				printf("%s", OUTPUT_DEBUG_COMPUTER_ON_OFF);
+				scanf("%s", answer);
+			}
+
+			COMPUTER_ACTIVE = (!_stricmp(answer, INPUT_YES));
+		}
+
+		printf("%s", OUTPUT_DEBUG_DUMP_FIELD);
+		scanf("%s", answer);
+
+		if (!_stricmp(answer, INPUT_YES))
+		{
+			DUMP_FIELD = true;
+		}
+		else if (!_stricmp(answer, INPUT_NO))
+		{
+			DUMP_FIELD = false;
+		}
+		else
+		{
+			while (!_stricmp(answer, INPUT_YES) && !_stricmp(answer, INPUT_NO))
+			{
+				printf("%s", OUTPUT_ERROR_GENERIC_INVALID_INPUT);
+				printf("%s", OUTPUT_DEBUG_DUMP_FIELD);
+				scanf("%s", answer);
+			}
+
+			DUMP_FIELD = !_stricmp(answer, INPUT_YES);
 		}
 	}
 
@@ -65,12 +101,12 @@ int parseCommandlineArguments(int _argc, char *_argv[])
 		return NO_COMMANDS_PROCESSED;
 	}
 
-	if (strcmp(_argv[1], "--version") == 0)
+	if (!_stricmp(_argv[1], "--version") || !_stricmp(_argv[1], "-V"))
 	{
-		time_t build_timestamp = (time_t) BUILD_TIMESTAMP;
-		printf("Tic Tac Toe\n - Version %.1lf (%s)\n - by Javkhlanbayar Khongorzul (1DHIF)\n - Build date: %s", VERSION, DEBUG == 0 ? BUILD_FLAVOR_RELEASE : BUILD_FLAVOR_DEBUG, ctime(&build_timestamp));
+		time_t build_timestamp = (time_t)BUILD_TIMESTAMP;
+		printf("Tic Tac Toe\n - Version %.1lf (%s)\n - by Javkhlanbayar Khongorzul (1DHIF)\n - Build date: %s", VERSION, DEBUG ? BUILD_FLAVOR_DEBUG : BUILD_FLAVOR_RELEASE, ctime(&build_timestamp));
 	}
-	else if (strcmp(_argv[1], "--help") == 0)
+	else if (!_stricmp(_argv[1], "--help"))
 	{
 		printf("There are definitely no secrets in here ;)\n");
 	}
@@ -99,12 +135,12 @@ void processNewMove()
 
 	printPlayground();
 
-	printf(OUTPUT_NEW_MOVE);
+	printf("%s", OUTPUT_NEW_MOVE);
 	scanf("%d", &fieldNumber);
 
 	if (fieldNumber < 1 || fieldNumber > 9)
 	{
-		printf(OUTPUT_ERROR_FIELD_NOT_IN_RANGE);
+		printf("%s", OUTPUT_ERROR_FIELD_NOT_IN_RANGE);
 		processNewMove();
 		return;
 	}
@@ -118,7 +154,7 @@ void processNewMove()
 		}
 		else
 		{
-			printf(OUTPUT_ERROR_FIELD_ALREADY_FILLED);
+			printf("%s", OUTPUT_ERROR_FIELD_ALREADY_FILLED);
 			processNewMove();
 			return;
 		}
@@ -131,7 +167,7 @@ void processNewMove()
 		}
 		else
 		{
-			printf(OUTPUT_ERROR_FIELD_ALREADY_FILLED);
+			printf("%s", OUTPUT_ERROR_FIELD_ALREADY_FILLED);
 			processNewMove();
 			return;
 		}
@@ -144,23 +180,23 @@ void processNewMove()
 		}
 		else
 		{
-			printf(OUTPUT_ERROR_FIELD_ALREADY_FILLED);
+			printf("%s", OUTPUT_ERROR_FIELD_ALREADY_FILLED);
 			processNewMove();
 			return;
 		}
 	}
-	printf(OUTPUT_MOVED);
+	printf("%s", OUTPUT_MOVED);
 
 	//Has someone won yet?
-	if (checkIfGameIsOver() != WIN_NO_WIN_YET)
+	if (isGameOverAndPrintMessages())
 	{
 		return;
 	}
 
 	//Game isn't over yet
-	if (COMPUTER_ACTIVE == 0)
+	if (!COMPUTER_ACTIVE)
 	{
-		printf(OUTPUT_COMPUTER_MOVE_SKIPPED);
+		printf("%s", OUTPUT_COMPUTER_MOVE_SKIPPED);
 		processNewMove();
 		return;
 	}
@@ -208,7 +244,12 @@ void computerMove(int unavailableNumbers[], int unavailableNumbersSize, int pick
 		field[0][pick] = VALUE_COMPUTER;
 	}
 
-	printf(OUTPUT_COMPUTER_MOVE_DONE);
+	if (isGameOverAndPrintMessages())
+	{
+		return;
+	}
+
+	printf("%s", OUTPUT_COMPUTER_MOVE_DONE);
 	processNewMove();
 }
 
@@ -235,16 +276,16 @@ void printPlayground()
 			{
 				printf("\n");
 			}
-			else 
+			else
 			{
 				printf((j % 2 == 0) ? "|" : " ");
 			}
 		}
 	}
-	printf(OUTPUT_CURRENT_BOARD_H_OUTLINES);
-	printf(OUTPUT_CURRENT_BOARD_MARGIN_CHARS);
+	printf("%s", OUTPUT_CURRENT_BOARD_H_OUTLINES);
+	printf("%s", OUTPUT_CURRENT_BOARD_MARGIN_CHARS);
 
-	if (DEBUG == 1)
+	if (DUMP_FIELD)
 	{
 		printf("DUMPING field:\n[");
 		for (int i = 0; i < 9; i++)
@@ -261,30 +302,30 @@ void printPlayground()
 	}
 }
 
-int checkIfGameIsOver()
+bool isGameOverAndPrintMessages()
 {
 	int winner = currentWinner();
 
 	if (winner == WIN_NO_WIN_YET)
 	{
-		return WIN_NO_WIN_YET;
+		return false;
 	}
 	printPlayground();
 
 	if (winner == WIN_COMPUTER_WON)
 	{
-		printf(OUTPUT_GAME_OVER_LOSS);
+		printf("%s", OUTPUT_GAME_OVER_LOSS);
 	}
 	else if (winner == WIN_USER_WON)
 	{
-		printf(OUTPUT_GAME_OVER_VICTORY);
+		printf("%s", OUTPUT_GAME_OVER_VICTORY);
 	}
-	else
+	else if (winner == WIN_TIE)
 	{
-		printf(OUTPUT_GAME_OVER_TIE);
+		printf("%s", OUTPUT_GAME_OVER_TIE);
 	}
 
-	return 1;
+	return true;
 }
 
 int currentWinner()
@@ -292,8 +333,10 @@ int currentWinner()
 	int winner = WIN_NO_WIN_YET;
 	for (int i = 0; i < 2; i++)
 	{
-		int counter = (i == 0 ? VALUE_COMPUTER : VALUE_USER);
-		if ((field[0][0] == counter && field[0][1] == counter && field[0][2] == counter) || (field[1][0] == counter && field[1][1] == counter && field[1][2] == counter) || (field[2][0] == counter && field[2][1] == counter && field[2][2] == counter))
+		int counter = ((i == 0) ? VALUE_COMPUTER : VALUE_USER);
+		if (DEBUG) printf("field check for %d!\n", counter);
+
+		if (((field[0][0] == counter) && (field[0][1] == counter) && (field[0][2] == counter)) || ((field[1][0] == counter) && (field[1][1] == counter) && (field[1][2] == counter)) || ((field[2][0] == counter) && (field[2][1] == counter) && (field[2][2] == counter)))
 		{
 			/*
 			    X X X        _ _ _        _ _ _
@@ -301,6 +344,7 @@ int currentWinner()
 			    _ _ _        _ _ _        X X X
 			*/
 			winner = counter;
+			break;
 		}
 		else if ((field[0][0] == counter && field[1][0] == counter && field[2][0] == counter) || (field[0][1] == counter && field[1][1] == counter && field[2][1] == counter) || (field[0][2] == counter && field[1][2] == counter && field[2][2] == counter))
 		{
@@ -310,6 +354,7 @@ int currentWinner()
 			    X _ _        _ X _        _ _ X
 			*/
 			winner = counter;
+			break;
 		}
 		else if ((field[0][0] == counter && field[1][1] == counter && field[2][2] == counter) || (field[0][2] == counter && field[1][1] == counter && field[2][0]))
 		{
@@ -320,8 +365,39 @@ int currentWinner()
 
 			*/
 			winner = counter;
+			break;
 		}
+	}
+	if (DEBUG) printf("winner: %d\n", winner);
+
+	if (winner == WIN_NO_WIN_YET && isBoardFull())
+	{
+		winner = WIN_TIE;
 	}
 
 	return winner;
+}
+
+bool isBoardFull()
+{
+	bool notFull = true;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (!notFull)
+			{
+				break;
+			}
+
+			notFull = field[i][j] != VALUE_FREE;
+		}
+
+		if (!notFull)
+		{
+			break;
+		}
+	}
+
+	return notFull;
 }
