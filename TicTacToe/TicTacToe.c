@@ -5,8 +5,12 @@
 #include <time.h>
 #include "settings.h"
 
-int field[3][3];
+#ifndef strcasecmp
+#define strcasecmp _stricmp
+#endif
 
+
+int field[3][3];
 
 int parseCommandlineArguments();
 
@@ -46,47 +50,47 @@ int main(int _argc, char *_argv[])
 		printf("%s", OUTPUT_DEBUG_COMPUTER_ON_OFF);
 		scanf("%s", answer);
 
-		if (!_stricmp(answer, INPUT_YES))
+		if (!strcasecmp(answer, INPUT_YES))
 		{
 			COMPUTER_ACTIVE = true;
 		}
-		else if (!_stricmp(answer, INPUT_NO))
+		else if (!strcasecmp(answer, INPUT_NO))
 		{
 			COMPUTER_ACTIVE = false;
 		}
 		else
 		{
-			while (!_stricmp(answer, INPUT_YES) && !_stricmp(answer, INPUT_NO))
+			while (!strcasecmp(answer, INPUT_YES) && !strcasecmp(answer, INPUT_NO))
 			{
 				printf("%s", OUTPUT_ERROR_GENERIC_INVALID_INPUT);
 				printf("%s", OUTPUT_DEBUG_COMPUTER_ON_OFF);
 				scanf("%s", answer);
 			}
 
-			COMPUTER_ACTIVE = (!_stricmp(answer, INPUT_YES));
+			COMPUTER_ACTIVE = (!strcasecmp(answer, INPUT_YES));
 		}
 
 		printf("%s", OUTPUT_DEBUG_DUMP_FIELD);
 		scanf("%s", answer);
 
-		if (!_stricmp(answer, INPUT_YES))
+		if (!strcasecmp(answer, INPUT_YES))
 		{
 			DUMP_FIELD = true;
 		}
-		else if (!_stricmp(answer, INPUT_NO))
+		else if (!strcasecmp(answer, INPUT_NO))
 		{
 			DUMP_FIELD = false;
 		}
 		else
 		{
-			while (!_stricmp(answer, INPUT_YES) && !_stricmp(answer, INPUT_NO))
+			while (!strcasecmp(answer, INPUT_YES) && !strcasecmp(answer, INPUT_NO))
 			{
 				printf("%s", OUTPUT_ERROR_GENERIC_INVALID_INPUT);
 				printf("%s", OUTPUT_DEBUG_DUMP_FIELD);
 				scanf("%s", answer);
 			}
 
-			DUMP_FIELD = !_stricmp(answer, INPUT_YES);
+			DUMP_FIELD = !strcasecmp(answer, INPUT_YES);
 		}
 	}
 
@@ -101,12 +105,12 @@ int parseCommandlineArguments(int _argc, char *_argv[])
 		return NO_COMMANDS_PROCESSED;
 	}
 
-	if (!_stricmp(_argv[1], "--version") || !_stricmp(_argv[1], "-V"))
+	if (!strcasecmp(_argv[1], "--version") || !strcasecmp(_argv[1], "-V"))
 	{
 		time_t build_timestamp = (time_t)BUILD_TIMESTAMP;
 		printf("Tic Tac Toe\n - Version %.1lf (%s)\n - by Javkhlanbayar Khongorzul (1DHIF)\n - Build date: %s", VERSION, DEBUG ? BUILD_FLAVOR_DEBUG : BUILD_FLAVOR_RELEASE, ctime(&build_timestamp));
 	}
-	else if (!_stricmp(_argv[1], "--help"))
+	else if (!strcasecmp(_argv[1], "--help"))
 	{
 		printf("There are definitely no secrets in here ;)\n");
 	}
