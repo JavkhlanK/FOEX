@@ -1,12 +1,14 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
 #include "settings.h"
 
-#ifndef strcasecmp
+#ifdef _WIN32
+#include <string.h>
 #define strcasecmp _stricmp
+#else // assuming POSIX or BSD compliant system
+#include <strings.h>
 #endif
 
 
