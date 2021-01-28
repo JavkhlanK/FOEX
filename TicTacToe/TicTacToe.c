@@ -226,7 +226,7 @@ void processNewMove()
 		return;
 	}
 
-	if (DIFFICULTY = DIFFICULTY_COMPUTER_EASY)
+	if (DIFFICULTY == DIFFICULTY_COMPUTER_EASY)
 	{
 		computerMoveModeEasy();
 	}
@@ -240,7 +240,7 @@ void processNewMove()
 	}
 	else
 	{
-		printf(OUTPUT_ERROR_GENERIC_HOW_DID_WE_GET_HERE);
+		printf("%s", OUTPUT_ERROR_GENERIC_HOW_DID_WE_GET_HERE);
 	}
 	
 }
