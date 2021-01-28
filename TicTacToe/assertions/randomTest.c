@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-void main() {
+void main()
+{
     int min, max;
     srand(time(NULL));
     _sleep(200);

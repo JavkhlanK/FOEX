@@ -8,13 +8,14 @@
             "name": "gcc.exe - Build and debug active file",
             "type": "cppdbg",
             "request": "launch",
-            "program": "C:\\Windows\\system32\\cmd.exe",
-            "args": ["/c", "${fileDirname}\\${fileBasenameNoExtension}.exe", "&&", "pause"],
+            "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+            "args": [],
             "stopAtEntry": false,
-            "cwd": "D:\\School\\Programs\\MinGW\\bin",
+            "cwd": "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin",
             "environment": [],
-            "externalConsole": true,
+            "console": "externalTerminal",
             "MIMode": "gdb",
+            "miDebuggerPath": "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\gdb.exe",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",

@@ -20,7 +20,9 @@ void fillBoard();
 
 void processNewMove();
 
-void computerMove(int unavailableNumbers[], int unavailableNumbersSize, int pick);
+void computerMoveModeEasy();
+
+void computerMoveEasyPick(int unavailableNumbers[], int unavailableNumbersSize, int pick);
 
 void printPlayground();
 
@@ -45,55 +47,72 @@ int main(int _argc, char *_argv[])
 
 	fillBoard();
 	srand(time(NULL));
+	
+	char *input;
+	do
+	{
+		printf("%s", OUTPUT_QUESTION_DIFFICULTY);
+		scanf("%s", input);
+
+		if (!strcasecmp(input, INPUT_DIFFICULTY_EASY))
+		{
+			DIFFICULTY = DIFFICULTY_COMPUTER_EASY;
+		}
+		else if (!strcasecmp(input, INPUT_DIFFICULTY_HARD))
+		{
+			DIFFICULTY = DIFFICULTY_COMPUTER_HARD;
+		}
+		else if (!strcasecmp(input, INPUT_DIFFICULTY_PLAYER_VS_PLAYER))
+		{
+			DIFFICULTY = DIFFICULTY_PLAYER_VS_PLAYER;
+		}
+		else
+		{
+			printf("%s", OUTPUT_ERROR_GENERIC_INVALID_INPUT);
+		}
+		
+	} while (strcasecmp(input, INPUT_DIFFICULTY_EASY) && strcasecmp(input, INPUT_DIFFICULTY_HARD) && strcasecmp(input, INPUT_DIFFICULTY_PLAYER_VS_PLAYER));
 
 	if (DEBUG)
 	{
-		char *answer;
-		printf("%s", OUTPUT_DEBUG_COMPUTER_ON_OFF);
-		scanf("%s", answer);
-
-		if (!strcasecmp(answer, INPUT_YES))
+		do
 		{
-			COMPUTER_ACTIVE = true;
-		}
-		else if (!strcasecmp(answer, INPUT_NO))
-		{
-			COMPUTER_ACTIVE = false;
-		}
-		else
-		{
-			while (!strcasecmp(answer, INPUT_YES) && !strcasecmp(answer, INPUT_NO))
+			printf("%s", OUTPUT_DEBUG_COMPUTER_ON_OFF);
+			scanf("%s", input);
+			
+			if (!strcasecmp(input, INPUT_YES))
+			{
+				COMPUTER_ACTIVE = true;
+			}
+			else if (!strcasecmp(input, INPUT_NO))
+			{
+				COMPUTER_ACTIVE = false;
+			}
+			else
 			{
 				printf("%s", OUTPUT_ERROR_GENERIC_INVALID_INPUT);
-				printf("%s", OUTPUT_DEBUG_COMPUTER_ON_OFF);
-				scanf("%s", answer);
 			}
+		} while (strcasecmp(input, INPUT_YES) && strcasecmp(input, INPUT_NO));
 
-			COMPUTER_ACTIVE = (!strcasecmp(answer, INPUT_YES));
-		}
+		do
+		{
+			printf("%s", OUTPUT_DEBUG_DUMP_FIELD);
+			scanf("%s", input);
 
-		printf("%s", OUTPUT_DEBUG_DUMP_FIELD);
-		scanf("%s", answer);
-
-		if (!strcasecmp(answer, INPUT_YES))
-		{
-			DUMP_FIELD = true;
-		}
-		else if (!strcasecmp(answer, INPUT_NO))
-		{
-			DUMP_FIELD = false;
-		}
-		else
-		{
-			while (!strcasecmp(answer, INPUT_YES) && !strcasecmp(answer, INPUT_NO))
+			if (!strcasecmp(input, INPUT_YES))
+			{
+				DUMP_FIELD = true;
+			}
+			else if (!strcasecmp(input, INPUT_NO))
+			{
+				DUMP_FIELD = false;
+			}
+			else
 			{
 				printf("%s", OUTPUT_ERROR_GENERIC_INVALID_INPUT);
-				printf("%s", OUTPUT_DEBUG_DUMP_FIELD);
-				scanf("%s", answer);
 			}
-
-			DUMP_FIELD = !strcasecmp(answer, INPUT_YES);
-		}
+			
+		} while (strcasecmp(input, INPUT_YES) && strcasecmp(input, INPUT_NO));
 	}
 
 	processNewMove();
@@ -206,7 +225,28 @@ void processNewMove()
 		processNewMove();
 		return;
 	}
-	//Easy AI mode
+
+	if (DIFFICULTY = DIFFICULTY_COMPUTER_EASY)
+	{
+		computerMoveModeEasy();
+	}
+	else if (DIFFICULTY == DIFFICULTY_COMPUTER_HARD)
+	{
+		//TODO: Add hard game mode
+	}
+	else if (DIFFICULTY == DIFFICULTY_PLAYER_VS_PLAYER)
+	{
+		//TODO: Add 2 player game mode
+	}
+	else
+	{
+		printf(OUTPUT_ERROR_GENERIC_HOW_DID_WE_GET_HERE);
+	}
+	
+}
+
+void computerMoveModeEasy()
+{
 	int pick = rand() % 9;
 	int unavailableNumbers[9];
 	int unavailableNumbersSize = 0;
@@ -222,17 +262,18 @@ void processNewMove()
 			}
 		}
 	}
-	computerMove(unavailableNumbers, unavailableNumbersSize, pick);
+
+	computerMoveEasyPick(unavailableNumbers, unavailableNumbersSize, pick);
 }
 
-void computerMove(int unavailableNumbers[], int unavailableNumbersSize, int pick)
+void computerMoveEasyPick(int unavailableNumbers[], int unavailableNumbersSize, int pick)
 {
 	for (int index = 0; index < unavailableNumbersSize; index++)
 	{
 		if (pick == unavailableNumbers[index])
 		{
 			pick = rand() % 9;
-			computerMove(unavailableNumbers, unavailableNumbersSize, pick);
+			computerMoveEasyPick(unavailableNumbers, unavailableNumbersSize, pick);
 			return;
 		}
 	}
@@ -293,7 +334,7 @@ void printPlayground()
 
 	if (DUMP_FIELD)
 	{
-		printf("DUMPING field:\n[");
+		printf("Dump of field:\n[");
 		for (int i = 0; i < 9; i++)
 		{
 			if (i == 8)
@@ -339,30 +380,30 @@ int currentWinner()
 	int winner = WIN_NO_WIN_YET;
 	for (int i = 0; i < 2; i++)
 	{
-		int counter = ((i == 0) ? VALUE_COMPUTER : VALUE_USER);
-		if (DEBUG) printf("field check for %d!\n", counter);
+		int currentEntity = ((i == 0) ? VALUE_COMPUTER : VALUE_USER);
+		if (DEBUG) printf("Field check for %s!\n", currentEntity == VALUE_COMPUTER ? "computer" : currentEntity == VALUE_USER ? "player" : "unknown");
 
-		if (((field[0][0] == counter) && (field[0][1] == counter) && (field[0][2] == counter)) || ((field[1][0] == counter) && (field[1][1] == counter) && (field[1][2] == counter)) || ((field[2][0] == counter) && (field[2][1] == counter) && (field[2][2] == counter)))
+		if (((field[0][0] == currentEntity) && (field[0][1] == currentEntity) && (field[0][2] == currentEntity)) || ((field[1][0] == currentEntity) && (field[1][1] == currentEntity) && (field[1][2] == currentEntity)) || ((field[2][0] == currentEntity) && (field[2][1] == currentEntity) && (field[2][2] == currentEntity)))
 		{
 			/*
 			    X X X        _ _ _        _ _ _
 			    _ _ _   or   X X X   or   _ _ _
 			    _ _ _        _ _ _        X X X
 			*/
-			winner = counter;
+			winner = currentEntity;
 			break;
 		}
-		else if ((field[0][0] == counter && field[1][0] == counter && field[2][0] == counter) || (field[0][1] == counter && field[1][1] == counter && field[2][1] == counter) || (field[0][2] == counter && field[1][2] == counter && field[2][2] == counter))
+		else if ((field[0][0] == currentEntity && field[1][0] == currentEntity && field[2][0] == currentEntity) || (field[0][1] == currentEntity && field[1][1] == currentEntity && field[2][1] == currentEntity) || (field[0][2] == currentEntity && field[1][2] == currentEntity && field[2][2] == currentEntity))
 		{
 			/*
 			    X _ _        _ X _        _ _ X
 			    X _ _   or   _ X _   or   _ _ X
 			    X _ _        _ X _        _ _ X
 			*/
-			winner = counter;
+			winner = currentEntity;
 			break;
 		}
-		else if ((field[0][0] == counter && field[1][1] == counter && field[2][2] == counter) || (field[0][2] == counter && field[1][1] == counter && field[2][0]))
+		else if ((field[0][0] == currentEntity && field[1][1] == currentEntity && field[2][2] == currentEntity) || (field[0][2] == currentEntity && field[1][1] == currentEntity && field[2][0] == currentEntity))
 		{
 			/*
 				X _ _        _ _ X
@@ -370,11 +411,11 @@ int currentWinner()
 				_ _ X        X _ _
 
 			*/
-			winner = counter;
+			winner = currentEntity;
 			break;
 		}
 	}
-	if (DEBUG) printf("winner: %d\n", winner);
+	if (DEBUG) printf("Winner: %d\n", winner);
 
 	if (winner == WIN_NO_WIN_YET && isBoardFull())
 	{
