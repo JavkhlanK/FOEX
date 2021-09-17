@@ -7,10 +7,18 @@
 #ifdef _WIN32
 #include <string.h>
 #define strcasecmp _stricmp
-#else // assuming POSIX or BSD compliant system
+#else	//assuming POSIX or BSD compliant system
 #include <strings.h>
 #endif
 
+/*
+	Field comments:
+	 - X:	Field to fill in
+	 - O:	One of all O's is not the same as the others
+	 - A:	Any entity (currently Computer or Player)
+	 - C:	Computer only
+	 - U:	User only
+*/
 
 int field[3][3];
 
@@ -48,7 +56,7 @@ int main(int _argc, char *_argv[])
 	fillBoard();
 	srand(time(NULL));
 	
-	char *input;
+	char input[30];
 	do
 	{
 		printf("%s", OUTPUT_QUESTION_DIFFICULTY);
@@ -170,7 +178,9 @@ void processNewMove()
 		return;
 	}
 
-	//Check if the fields are already filled
+
+	/* Check if the fields are already filled */
+
 	if (fieldNumber > 6)
 	{
 		if (field[2][fieldNumber - 7] == VALUE_FREE)
@@ -212,13 +222,17 @@ void processNewMove()
 	}
 	printf("%s", OUTPUT_MOVED);
 
-	//Has someone won yet?
+
+	/* Has someone won yet? */
+
 	if (isGameOverAndPrintMessages())
 	{
 		return;
 	}
 
-	//Game isn't over yet
+
+	/* Game isn't over yet */
+
 	if (!COMPUTER_ACTIVE)
 	{
 		printf("%s", OUTPUT_COMPUTER_MOVE_SKIPPED);
